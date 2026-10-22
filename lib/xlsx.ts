@@ -7,6 +7,8 @@ export async function build(docs: Doc[]) {
   for (const d of docs) for (const it of d.items) ws.addRow({ ...it, fileName: d.fileName, invoiceNo: d.invoiceNo, currency: d.currency });
   const n = ws.rowCount; const tr = ws.addRow({ description: "TOTAL" });
   for (const k of ["qty","amount","cartons","netWeightKg","grossWeightKg","cbm"]) { const c = ws.getColumn(k).letter; tr.getCell(k).value = { formula: `SUM(${c}2:${c}${n})` } as any; }
+  // Amounts in different currencies must not be added together.
+  if (new Set(docs.map(d => (d.currency || "").toUpperCase()).filter(Boolean)).size > 1) tr.getCell("amount").value = "mixed currencies";
   tr.font = { bold: true }; ws.getRow(1).font = { bold: true, color: { argb: "FFFFFFFF" } };
   ws.getRow(1).fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FF1F4E79" } }; ws.autoFilter = { from: "A1", to: `N1` };
   const h = wb.addWorksheet("Documents");
