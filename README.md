@@ -7,3 +7,5 @@ npm install && npm run dev
 ```
 Sheets in the export: Line Items (with SUM formulas), Documents, Totals Check.
 See DEPLOY.md and DISTRIBUTION.md.
+
+`test-docs/` holds fictional test documents (text PDFs, PNG, scanned PDF). Two contain deliberate total errors: commercial-invoice.pdf (stated USD 37,535 vs line sum 37,435) and packing-list-image.png / scanned-packing-list.pdf (stated CBM 11.25 vs 10.75).

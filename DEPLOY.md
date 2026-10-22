@@ -6,12 +6,27 @@ Box status (2026-10-22): `vercel` CLI is **not installed** and not authenticated
 1. **Vercel access** — either:
    - push this repo to your GitHub and click "Import Project" at vercel.com/new (simplest), or
    - create a Vercel token (vercel.com/account/tokens) so it can be deployed with `npx vercel deploy --prod --token $VERCEL_TOKEN`.
-2. **LLM API key** for an OpenAI-compatible vision model → `LLM_API_KEY`, `LLM_BASE_URL`, `LLM_MODEL`.
-   PDFs are sent as an OpenAI `file` content part; images as `image_url`. If your provider does not accept PDF parts, use images or an OpenAI model (e.g. gpt-4o-mini). Live extraction has NOT been tested yet (no key available).
+2. **LLM API key** (OpenAI-compatible) → `LLM_API_KEY`, `LLM_BASE_URL`, `LLM_MODEL`, optional `LLM_VISION`.
+   - Text-only models (DeepSeek, default): PDFs with a text layer → server-side text extraction (unpdf). Images and scanned PDFs → OCR in the user's browser (tesseract.js eng+chi_sim, pdfjs renders pages; assets load from cdn.jsdelivr.net). The text is then sent to the chat model with `response_format: json_object`.
+   - Vision models: set `LLM_VISION=1` to send images/scanned PDFs directly to the model instead of OCR.
 3. **Support email** → `SUPPORT_EMAIL` (must match the one given to Waffo/Creem).
 4. **Checkout links** from Waffo or Creem → `CHECKOUT_URL_PRO` ($9/mo), `CHECKOUT_URL_CREDITS_100` ($5), `CHECKOUT_URL_CREDITS_500` ($19).
 5. **License keys** → `LICENSE_KEYS` (comma-separated) for paying customers; Creem can issue license keys, otherwise send them manually after each order.
 6. Optional: `SITE_URL` (for sitemap), `UPSTASH_REDIS_REST_URL/TOKEN` for durable free-tier limits.
+
+## Vercel environment variables (Project → Settings → Environment Variables, Production)
+| Name | Value |
+|---|---|
+| LLM_API_KEY | your DeepSeek key (secret) |
+| LLM_BASE_URL | https://api.deepseek.com |
+| LLM_MODEL | deepseek-chat |
+| LLM_VISION | (leave unset for DeepSeek) |
+| SUPPORT_EMAIL | your support email |
+| CHECKOUT_URL_PRO / CHECKOUT_URL_CREDITS_100 / CHECKOUT_URL_CREDITS_500 | Waffo/Creem payment links |
+| LICENSE_KEYS | comma-separated keys for paying customers |
+| FREE_PAGES_PER_DAY | 3 |
+| SITE_URL | https://<your-domain> |
+| UPSTASH_REDIS_REST_URL / UPSTASH_REDIS_REST_TOKEN | optional |
 
 ## Steps
 ```

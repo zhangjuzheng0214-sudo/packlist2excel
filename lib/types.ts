@@ -6,6 +6,6 @@ export type Check = { field: string; computed: number; stated: number|null; ok: 
 const F: [keyof NonNullable<Doc["statedTotals"]>, keyof Item][] = [["amount","amount"],["qty","qty"],["cartons","cartons"],["netWeightKg","netWeightKg"],["grossWeightKg","grossWeightKg"],["cbm","cbm"]];
 export function checks(d: Doc): Check[] {
   return F.map(([s,i]) => { const computed = Math.round(d.items.reduce((a,x)=>a+(Number(x[i])||0),0)*1000)/1000;
-    const st = d.statedTotals?.[s]; const stated = st==null?null:Number(st);
-    return { field: s, computed, stated, ok: stated==null?null: Math.abs(computed-stated) <= Math.max(0.01, Math.abs(stated)*0.001) }; });
+    const st = d.statedTotals?.[s]; const stated = st==null?null:Number(st); const hasLines = d.items.some(x => x[i] != null && x[i] !== "");
+    return { field: s, computed, stated, ok: stated==null||!hasLines?null: Math.abs(computed-stated) <= Math.max(0.01, Math.abs(stated)*0.001) }; });
 }

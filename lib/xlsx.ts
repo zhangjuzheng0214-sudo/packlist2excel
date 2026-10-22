@@ -14,7 +14,7 @@ export async function build(docs: Doc[]) {
   docs.forEach(d => h.addRow(d)); h.getRow(1).font = { bold: true };
   const c = wb.addWorksheet("Totals Check"); c.columns = [{header:"File",key:"f",width:24},{header:"Field",key:"field",width:16},{header:"Sum of lines",key:"computed",width:14},{header:"Stated on document",key:"stated",width:18},{header:"Status",key:"s",width:14}];
   c.getRow(1).font = { bold: true };
-  for (const d of docs) for (const k of checks(d)) { const r = c.addRow({ f: d.fileName, ...k, s: k.ok == null ? "not stated" : k.ok ? "OK" : "MISMATCH" });
+  for (const d of docs) for (const k of checks(d)) { const r = c.addRow({ f: d.fileName, ...k, s: k.ok == null ? (k.stated == null ? "not stated" : "no line data") : k.ok ? "OK" : "MISMATCH" });
     if (k.ok === false) r.getCell("s").fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FFFFC7CE" } }; }
   return Buffer.from(await wb.xlsx.writeBuffer());
 }

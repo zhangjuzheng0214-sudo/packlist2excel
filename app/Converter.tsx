@@ -1,10 +1,16 @@
 "use client"; import { useState, useEffect } from "react";
 type R = { docs: any[]; errors?: string[]; demo?: boolean; error?: string };
 export default function Converter({ live, initial }: { live: boolean; initial?: R }) {
-  const [files, setFiles] = useState<File[]>([]); const [lic, setLic] = useState(""); const [busy, setBusy] = useState(false); const [r, setR] = useState<R | null>(initial || null);
-  async function run(demo: boolean) { setBusy(true); setR(null); const fd = new FormData();
+  const [files, setFiles] = useState<File[]>([]); const [lic, setLic] = useState(""); const [busy, setBusy] = useState(false); const [status, setStatus] = useState(""); const [r, setR] = useState<R | null>(initial || null);
+  async function run(demo: boolean) { setBusy(true); setR(null); setStatus(demo ? "" : "Extracting…"); const fd = new FormData();
     if (demo) fd.append("demo", "1"); else { files.forEach(f => fd.append("files", f)); fd.append("license", lic); }
-    const res = await fetch("/api/extract", { method: "POST", body: fd }); setR(await res.json()); setBusy(false); }
+    let res: R & { needsOcr?: string[] } = await (await fetch("/api/extract", { method: "POST", body: fd })).json();
+    if (res.needsOcr?.length) { const { ocrFile } = await import("@/lib/ocr"); const fd2 = new FormData(); fd2.append("license", lic); const ocrErr: string[] = [];
+      for (const n of res.needsOcr) { const f = files.find(x => x.name === n)!; try { fd2.append("text:" + n, await ocrFile(f, setStatus)); } catch (e: any) { ocrErr.push(`${n}: OCR failed`); } }
+      setStatus("Extracting text…");
+      const r2: R = await (await fetch("/api/extract", { method: "POST", body: fd2 })).json();
+      res = { ...res, docs: [...(res.docs || []), ...(r2.docs || [])], errors: [...(res.errors || []), ...(r2.errors || []), ...ocrErr], error: res.error || r2.error }; }
+    setR(res); setBusy(false); setStatus(""); }
   async function dl() { const res = await fetch("/api/export", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ docs: r!.docs }) });
     const a = document.createElement("a"); a.href = URL.createObjectURL(await res.blob()); a.download = "packing-list.xlsx"; a.click(); }
   return (<div>
@@ -17,6 +23,7 @@ export default function Converter({ live, initial }: { live: boolean; initial?: 
       <button id="demo" className="btn alt" disabled={busy} onClick={() => run(true)}>Try the sample packing list</button>
       {" "}<a href="/sample-packing-list.svg" target="_blank">view sample document</a>
     </div>
+    {status && <p className="muted">{status}</p>}
     {r?.error && <p className="bad">{r.error}</p>}
     {r?.errors?.map(e => <p key={e} className="bad">{e}</p>)}
     {r?.docs?.length ? <div className="card" id="result">
@@ -26,7 +33,7 @@ export default function Converter({ live, initial }: { live: boolean; initial?: 
         <table><thead><tr>{["Pkg","Description","HS","Qty","Unit","Price","Amount","Ctns","N.W.","G.W.","CBM"].map(h => <th key={h}>{h}</th>)}</tr></thead>
           <tbody>{d.items.map((x: any, j: number) => <tr key={j}><td>{x.packageNo}</td><td>{x.description}</td><td>{x.hsCode}</td><td>{x.qty}</td><td>{x.unit}</td><td>{x.unitPrice}</td><td>{x.amount}</td><td>{x.cartons}</td><td>{x.netWeightKg}</td><td>{x.grossWeightKg}</td><td>{x.cbm}</td></tr>)}</tbody></table>
         <h4>Totals check</h4><table><thead><tr><th>Field</th><th>Sum of lines</th><th>Stated</th><th>Status</th></tr></thead>
-          <tbody>{d.checks.map((c: any) => <tr key={c.field}><td>{c.field}</td><td>{c.computed}</td><td>{c.stated ?? "—"}</td><td className={c.ok === false ? "bad" : "ok"}>{c.ok == null ? "not stated" : c.ok ? "✓ OK" : "✗ MISMATCH"}</td></tr>)}</tbody></table></div>)}
+          <tbody>{d.checks.map((c: any) => <tr key={c.field}><td>{c.field}</td><td>{c.computed}</td><td>{c.stated ?? "—"}</td><td className={c.ok === false ? "bad" : "ok"}>{c.ok == null ? (c.stated == null ? "not stated" : "no line data") : c.ok ? "✓ OK" : "✗ MISMATCH"}</td></tr>)}</tbody></table></div>)}
     </div> : null}
   </div>);
 }
