@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="560" font-family="Arial" font-size="13"><rect width="900" height="560" fill="#fff"/>
+<text x="450" y="34" font-size="20" font-weight="bold" text-anchor="middle">COMMERCIAL INVOICE &amp; PACKING LIST</text>
+<text x="30" y="70">Shipper: Ningbo Sample Housewares Co., Ltd.</text><text x="560" y="70">Invoice No: NSH-2026-0815</text>
+<text x="30" y="92">Consignee: Example Imports LLC, Los Angeles, CA, USA</text><text x="560" y="92">Date: 2026-08-15</text>
+<text x="30" y="114">Currency: USD</text><text x="560" y="114">Terms: FOB Ningbo</text>
+<g font-weight="bold"><text x="30" y="160">Pkg No</text><text x="95" y="160">Description</text><text x="330" y="160">HS Code</text><text x="400" y="160">Qty</text><text x="450" y="160">Unit</text><text x="500" y="160">U.Price</text><text x="565" y="160">Amount</text><text x="635" y="160">Ctns</text><text x="685" y="160">N.W.kg</text><text x="750" y="160">G.W.kg</text><text x="820" y="160">CBM</text></g>
+<line x1="25" y1="168" x2="875" y2="168" stroke="#000"/>
+<text x="30" y="192">1-50</text><text x="95" y="192">Stainless steel water bottle 500ml</text><text x="330" y="192">9617.00</text><text x="400" y="192">1200</text><text x="450" y="192">PCS</text><text x="500" y="192">3.20</text><text x="565" y="192">3840.00</text><text x="635" y="192">50</text><text x="685" y="192">480</text><text x="750" y="192">550</text><text x="820" y="192">3.1</text>
+<text x="30" y="216">51-110</text><text x="95" y="216">Silicone food storage lid set</text><text x="330" y="216">3924.10</text><text x="400" y="216">1800</text><text x="450" y="216">SETS</text><text x="500" y="216">1.80</text><text x="565" y="216">3240.00</text><text x="635" y="216">60</text><text x="685" y="216">855</text><text x="750" y="216">930</text><text x="820" y="216">4.2</text>
+<text x="30" y="240">111-150</text><text x="95" y="240">Bamboo cutting board 30x20cm</text><text x="330" y="240">4419.11</text><text x="400" y="240">600</text><text x="450" y="240">PCS</text><text x="500" y="240">3.50</text><text x="565" y="240">2100.00</text><text x="635" y="240">40</text><text x="685" y="240">300</text><text x="750" y="240">380</text><text x="820" y="240">2.4</text>
+<line x1="25" y1="252" x2="875" y2="252" stroke="#000"/>
+<g font-weight="bold"><text x="95" y="276">TOTAL</text><text x="400" y="276">3600</text><text x="565" y="276">9180.00</text><text x="635" y="276">150</text><text x="685" y="276">1635</text><text x="750" y="276">1860</text><text x="820" y="276">9.9</text></g>
+<text x="30" y="330" fill="#888">Sample document with fictional companies, for demonstration only (contains a deliberate CBM total error).</text></svg>
